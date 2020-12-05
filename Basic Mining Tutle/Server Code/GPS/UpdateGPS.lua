@@ -3,6 +3,5 @@
 print("Removing old script.")
 shell.run("rm", "startup")
 print("Downloading Newest Edition.")
-shell.run("pastebin", "get jj6HhgXf startup")
-shell.run("move", "startup rom/startup")
+shell.run("pastebin", "get C5pvDxwS startup")
 print("Update Complete.")

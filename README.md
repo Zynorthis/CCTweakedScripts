@@ -11,3 +11,11 @@ A Repository For CC Tweaked Scripts
 
 [Updater](https://pastebin.com/Fw2B61Qc) (GPS)
 
+## To Do
+
+Roomba Project:
+
+- [ ] Implement Rednet API For Server Communication
+- [ ] Write Server Code For Deployments
+- [ ] Implement Rednet API To Server For Personal Computer Communication
+- [ ] Write Algorithm For Pathfinding

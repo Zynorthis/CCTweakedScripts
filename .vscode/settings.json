@@ -1,6 +1,7 @@
 {
     "Lua.diagnostics.globals": [
         "turtle",
-        "shell"
+        "shell",
+        "gps"
     ]
 }

@@ -7,17 +7,60 @@ local chargingStation_x = 0
 local chargingStation_y = 0
 local chargingStation_z = 0
 
+local Directions = {
+    North = "North",
+    East = "East",
+    South = "South",
+    West = "West"
+}
+
 print(string.format("Charging Station Set At: %d, %d, %d", chargingStation_x, chargingStation_y, chargingStation_z))
 
 local currentLocation_x, currentLocation_y, currentLocation_z = 0, 0, 0
+local currentRotation = Directions.North
+
 
 -- Moves around room and picks up items
 -- Returns: Void
 function SweepFloor()
     -- get inital charge from charging station
-    
-    -- sweep floor
+    GetCurrentLocation()
+    if ((chargingStation_x == currentLocation_x) and 
+    (chargingStation_y == currentLocation_y) and 
+    (currentLocation_z == currentLocation_z)) then
+        Recharge()
+    else
+        -- move to charging station
+        
+    end
 
+    -- sweep floor
+    while turtle.getFuelLevel() > 100 do
+        
+    end
+end
+
+-- Calculates and Set the current rotation of the roomba
+-- Returns: Void
+function CalculateRotation()
+    GetCurrentLocation()
+    local previous_x = currentLocation_x
+    local previous_y = chargingStation_y
+
+    turtle.forward()
+    if (previous_x - currentLocation_x) ~= 0 then
+        if (previous_x - currentLocation_x) == 1 then
+            currentRotation = Directions.North
+        else
+            currentRotation = Directions.South
+        end
+    elseif (previous_y - currentLocation_y) ~= 0 then    
+        if (previous_y - currentLocation_y) == 1 then
+            currentRotation = Directions.West
+        else
+            currentRotation = Directions.East
+        end
+    end
 end
 
 -- Moves roobma to charging station and recharges
@@ -71,8 +114,8 @@ end
 function GetCurrentLocation()
     currentLocation_x, currentLocation_y, currentLocation_z = gps.locate()
     if ((currentLocation_x ~= nil) and 
-        (currentLocation_y ~= nil) and 
-        (currentLocation_z ~= nil)) then
+    (currentLocation_y ~= nil) and 
+    (currentLocation_z ~= nil)) then
         return true
     else
         return false

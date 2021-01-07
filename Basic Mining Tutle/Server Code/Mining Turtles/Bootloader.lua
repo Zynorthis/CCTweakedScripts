@@ -1,5 +1,5 @@
 -- Boot Loader Code
 
-shell.delete("client")
-shell.copy("disk/client", "client")
-shell.run("client")
+shell.delete("Updater")
+shell.copy("disk/Updater", "Updater")
+shell.run("Updater")

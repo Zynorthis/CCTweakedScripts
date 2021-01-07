@@ -1,25 +1,22 @@
--- Bassic Miner v0.20
+-- Bassic Miner v1.2.0
 
-local arg1, arg2 = ...
-local levelsToMine = tonumber(arg1)
-local areaToMine = tonumber(arg2)
+local isMiningVariablesLoaded = require("Mining_Variables")
+local isConfigLoaded = require("config")
+
+local levels, area = ...
+local levelsToMine = tonumber(levels)
+local areaToMine = tonumber(area)
+
+if isConfigLoaded then
+    fuelSource = selected_fuel
+end
 
 -- Start of the program
 function MineHole()
     print("Starting Robot...")
     local fuelNeeded = CalculateFuel()
     if fuelNeeded ~= 0 then
-        if turtle.select(GetItemIndex("minecraft:coal")) then
-            if turtle.getItemCount() < fuelNeeded then
-                error("Error: Not enough fuel provided for full execution.")
-                return
-            else
-                print(string.format("Consuming Fuel Needed: %d", fuelNeeded))
-                turtle.refuel(fuelNeeded)
-            end
-        else
-            error("Error: No coal detected in turtle inventory.")
-        end
+        ConsumeFuel(fuelNeeded)
     end
 
     local depth = 1 
@@ -54,13 +51,65 @@ function CalculateFuel()
     local currentFuelLevel = turtle.getFuelLevel()
     print(string.format("Total Steps Needed: %d", steps))
     print(string.format("Current Fuel Level: %d", currentFuelLevel))
-    local coalNeeded = 0
+    local fuelNeeded = 0
     if turtle.getFuelLevel() > steps then
         print("No Additional Fuel Needed.")
     else
-        coalNeeded = math.ceil((steps - currentFuelLevel) / 80)
+        if selected_fuel == FuelSources.Coal then
+            fuelNeeded = math.ceil((steps - currentFuelLevel) / 80)
+        else if selected_fuel == FuelSources.Charcoal then
+            fuelNeeded = math.ceil((steps - currentFuelLevel) / 80)
+        else if selected_fuel == FuelSources.CoalBlocks then
+            fuelNeeded = math.ceil((steps - currentFuelLevel) / 720)
+        else if selected_fuel == FuelSources.Lava then
+            fuelNeeded = math.ceil((steps - currentFuelLevel) / 1000)
+        end
     end
-    return coalNeeded
+    return fuelNeeded
+end
+
+-- Looks into the given turtle's inventory to find and consume the selected fuel source. 
+function ConsumeFuel(fuelNeeded) 
+    if fuelSource == FuelSources.Lava then
+        for i = 0, fuelNeeded, 1 do
+            os.sleep(2)
+            if turtle.detectUp() then
+                turtle.suckUp()
+            else
+                error("Error: No Enderchest Detected For Fueling.")
+            end
+            if GetItemIndex("minecraft:lava_bucket") ~= 0 and turtle.select(GetItemIndex("minecraft:lava_bucket")) then
+                turtle.refuel()
+                turtle.dropUp()
+            else
+                error("Error: There was a problem finding fuel for turtle.")
+                if GetItemIndex("minecraft:bucket") ~= 0 and turtle.select(GetItemIndex("minecraft:bucket")) then
+                    turtle.dropUp()
+                end
+            end
+        end
+    else if fuelSource == FuelSources.Coal then
+        if GetItemIndex("minecraft:coal") ~= 0 and turtle.select(GetItemIndex("minecraft:coal")) then
+            turtle.select(GetItemIndex("minecraft:coal")
+            turtle.refuel(fuelNeeded)
+        else
+            error("Error: No coal detected in invenetory.")
+        end
+    else if fuelSource == FuelSources.Charcoal then
+        if GetItemIndex("minecraft:charcoal") ~= 0 and turtle.select(GetItemIndex("minecraft:charcoal")) then
+            turtle.select(GetItemIndex("minecraft:charcoal")
+            turtle.refuel(fuelNeeded)
+        else
+            error("Error: No charcoal detected in invenetory.")
+        end
+    else if fuelSource == FuelSources.CoalBlocks then
+        if GetItemIndex("minecraft:coal_block") ~= 0 and turtle.select(GetItemIndex("minecraft:coal_block")) then
+            turtle.select(GetItemIndex("minecraft:coal_block")
+            turtle.refuel(fuelNeeded)
+        else
+            error("Error: No coal blocks detected in invenetory.")
+        end
+    end
 end
 
 -- This will mine an square equal to the area specified.

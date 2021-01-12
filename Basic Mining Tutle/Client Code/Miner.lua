@@ -57,11 +57,11 @@ function CalculateFuel()
     else
         if selected_fuel == FuelSources.Coal then
             fuelNeeded = math.ceil((steps - currentFuelLevel) / 80)
-        else if selected_fuel == FuelSources.Charcoal then
+        elseif selected_fuel == FuelSources.Charcoal then
             fuelNeeded = math.ceil((steps - currentFuelLevel) / 80)
-        else if selected_fuel == FuelSources.CoalBlocks then
+        elseif selected_fuel == FuelSources.CoalBlocks then
             fuelNeeded = math.ceil((steps - currentFuelLevel) / 720)
-        else if selected_fuel == FuelSources.Lava then
+        elseif selected_fuel == FuelSources.Lava then
             fuelNeeded = math.ceil((steps - currentFuelLevel) / 1000)
         end
     end
@@ -88,23 +88,23 @@ function ConsumeFuel(fuelNeeded)
                 end
             end
         end
-    else if fuelSource == FuelSources.Coal then
+    elseif fuelSource == FuelSources.Coal then
         if GetItemIndex("minecraft:coal") ~= 0 and turtle.select(GetItemIndex("minecraft:coal")) then
-            turtle.select(GetItemIndex("minecraft:coal")
+            turtle.select(GetItemIndex("minecraft:coal"))
             turtle.refuel(fuelNeeded)
         else
             error("Error: No coal detected in invenetory.")
         end
-    else if fuelSource == FuelSources.Charcoal then
+    elseif fuelSource == FuelSources.Charcoal then
         if GetItemIndex("minecraft:charcoal") ~= 0 and turtle.select(GetItemIndex("minecraft:charcoal")) then
-            turtle.select(GetItemIndex("minecraft:charcoal")
+            turtle.select(GetItemIndex("minecraft:charcoal"))
             turtle.refuel(fuelNeeded)
         else
             error("Error: No charcoal detected in invenetory.")
         end
-    else if fuelSource == FuelSources.CoalBlocks then
+    elseif fuelSource == FuelSources.CoalBlocks then
         if GetItemIndex("minecraft:coal_block") ~= 0 and turtle.select(GetItemIndex("minecraft:coal_block")) then
-            turtle.select(GetItemIndex("minecraft:coal_block")
+            turtle.select(GetItemIndex("minecraft:coal_block"))
             turtle.refuel(fuelNeeded)
         else
             error("Error: No coal blocks detected in invenetory.")

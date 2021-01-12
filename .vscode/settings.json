@@ -3,6 +3,12 @@
         "turtle",
         "shell",
         "gps",
-        "rednet"
+        "rednet",
+        "peripheral",
+        "rs"
+    ],
+    "Lua.diagnostics.disable": [
+        "lowercase-global",
+        "undefined-field"
     ]
 }

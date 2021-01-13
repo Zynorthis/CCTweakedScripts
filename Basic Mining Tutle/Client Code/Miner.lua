@@ -15,7 +15,7 @@ end
 function MineHole()
     print("Starting Robot...")
     local fuelNeeded = CalculateFuel()
-    if fuelNeeded ~= 0 then
+    if fuelNeeded ~= nil and fuelNeeded ~= 0 then
         ConsumeFuel(fuelNeeded)
     end
 
@@ -36,7 +36,7 @@ function MineHole()
     end
 
     print("Returning To Surface...")
-    local movementsUntilSurface = 1
+    local movementsUntilSurface = 0
     while movementsUntilSurface <= levelsToMine + 1 do
         ReturnToSurface()
         movementsUntilSurface = movementsUntilSurface + 1

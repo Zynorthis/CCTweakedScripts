@@ -1,4 +1,4 @@
--- Client Updater v1.1
+-- Client Updater v1.1 --
 
 local pastebin_link = "nvEURPTq"
 

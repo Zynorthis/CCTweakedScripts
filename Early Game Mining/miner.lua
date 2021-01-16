@@ -1,4 +1,4 @@
--- Bassic Miner (Early Game Edition) v0.1 --
+-- Bassic Miner (Early Game Edition) v0.7 --
 
 local levels, area = ...
 local levelsToMine = tonumber(levels)
@@ -12,19 +12,19 @@ function Mine()
     end
 
     local depth = 0 
-    while depth <= levelsToMine do
+    while depth < levelsToMine do
         MineLevel()
+        if ((areaToMine % 2) == 0) then
+            turtle.turnLeft()
+        else
+            turtle.turnLeft()
+            turtle.turnLeft()
+        end
+        depth = depth + 1
         if depth < levelsToMine then
             turtle.digDown()
             turtle.down()
         end
-        if ((areaToMine % 2) == 0) then
-            turtle.turnLeft()
-            turtle.turnLeft()
-        else
-            turtle.turnLeft()
-        end
-        depth = depth + 1
     end
 
     print("Returning To Surface...")
@@ -33,12 +33,13 @@ function Mine()
         ReturnToSurface()
         movementsUntilSurface = movementsUntilSurface + 1
     end
+    turtle.back()
     DepositItems()
     print("Mining Complete.")
 end
 
 function CalculateFuel()
-    local steps = (levelsToMine * (areaToMine + 1 ) * (areaToMine + 1)) + levelsToMine
+    local steps = (levelsToMine * areaToMine  * areaToMine) + levelsToMine
     local currentFuelLevel = turtle.getFuelLevel()
     print(string.format("Total Steps Needed: %d", steps))
     print(string.format("Current Fuel Level: %d", currentFuelLevel))
@@ -47,6 +48,9 @@ function CalculateFuel()
         print("No Additional Fuel Needed.")
     else
         fuelNeeded = math.ceil((steps - currentFuelLevel) / 80)
+    end
+    if fuelNeeded > (80 * 64) then
+        error("Error: To Many Steps Needed, Not Enough Fuel To Consume.")
     end
     return fuelNeeded
 end
@@ -61,12 +65,10 @@ function ConsumeFuel(fuelNeeded)
 end
 
 function MineLevel()
-    local stepsForward = 0
-    local rowsCompleted = 0
     local directionToTurn = true
 
-    for rowsCompleted = 0, areaToMine, 1 do
-        for stepsForward = 1, areaToMine, 1 do
+    for rowsCompleted = 1, areaToMine, 1 do
+        for stepsForward = 1, areaToMine - 1, 1 do
             DigAndMove()
             if CheckInventoryLevel() then
                 DepositItems()

@@ -1,6 +1,6 @@
--- Bassic Miner v1.2.0
+-- Bassic Miner v1.2.4
 
-local isMiningVariablesLoaded = require("Mining_Variables")
+local isMiningVariablesLoaded = require("variables")
 local isConfigLoaded = require("config")
 
 local levels, area = ...
@@ -28,8 +28,8 @@ function MineHole()
         end
         if ((areaToMine % 2) == 0) then
             turtle.turnLeft()
-            turtle.turnLeft()
         else
+            turtle.turnLeft()
             turtle.turnLeft()
         end
         depth = depth + 1
@@ -47,23 +47,30 @@ end
 
 -- calulates how much coal needs to be consumed based on how many moves the turtle will need to do.
 function CalculateFuel()
-    local steps = (levelsToMine * (areaToMine + 1 ) * (areaToMine + 1)) + levelsToMine
+    local steps = (levelsToMine * areaToMine * areaToMine) + levelsToMine
     local currentFuelLevel = turtle.getFuelLevel()
     print(string.format("Total Steps Needed: %d", steps))
     print(string.format("Current Fuel Level: %d", currentFuelLevel))
     local fuelNeeded = 0
+    local maxFuel = 0
     if turtle.getFuelLevel() > steps then
         print("No Additional Fuel Needed.")
     else
         if selected_fuel == FuelSources.Coal then
             fuelNeeded = math.ceil((steps - currentFuelLevel) / 80)
+            maxFuel = 80 * 64
         elseif selected_fuel == FuelSources.Charcoal then
             fuelNeeded = math.ceil((steps - currentFuelLevel) / 80)
+            maxFuel = 80 * 64
         elseif selected_fuel == FuelSources.CoalBlocks then
             fuelNeeded = math.ceil((steps - currentFuelLevel) / 720)
+            maxFuel = 720 * 64
         elseif selected_fuel == FuelSources.Lava then
             fuelNeeded = math.ceil((steps - currentFuelLevel) / 1000)
         end
+    end
+    if maxFuel ~= 0 and fuelNeeded > (maxFuel) then
+        error("Error: To Many Steps Needed, Not Enough Fuel To Consume.")
     end
     return fuelNeeded
 end
@@ -82,10 +89,11 @@ function ConsumeFuel(fuelNeeded)
                 turtle.refuel()
                 turtle.dropUp()
             else
-                error("Error: There was a problem finding fuel for turtle.")
+                print("Error: There was a problem finding fuel for turtle.")
                 if GetItemIndex("minecraft:bucket") ~= 0 and turtle.select(GetItemIndex("minecraft:bucket")) then
                     turtle.dropUp()
                 end
+                i = i - 1
             end
         end
     elseif fuelSource == FuelSources.Coal then
@@ -114,18 +122,16 @@ end
 
 -- This will mine an square equal to the area specified.
 function MineLevel()
-    local stepsForward = 1
-    local rowsCompleted = 1
     local directionToTurn = true
 
-    for rowsCompleted = 1, areaToMine + 1, 1 do
-        for stepsForward = 1, areaToMine, 1 do
+    for rowsCompleted = 1, areaToMine, 1 do
+        for stepsForward = 1, areaToMine - 1, 1 do
             DigAndMove()
             if CheckInventoryLevel() then
                 DepositItems()
             end
         end
-        if rowsCompleted ~= areaToMine + 1 then 
+        if rowsCompleted ~= areaToMine then 
             if directionToTurn then
                 turtle.turnLeft()
                 DigAndMove()
@@ -167,11 +173,11 @@ function DepositItems()
         end
         turtle.placeUp()
 
-        -- We start at inventory spot 2 because 1 will always have fuel in it
-        for i = 2, 16, 1 do
+        for i = 1, 16, 1 do
             turtle.select(i)
             turtle.dropUp()
         end
+        turtle.select(1)
         turtle.digUp()
     else
         warn("WARNING: No ender chest detected. Items will soon start to spill onto the ground!")
@@ -180,9 +186,9 @@ end
 
 -- Checks inventory levels
 function CheckInventoryLevel()
-    -- We start at 3 because 1 has fuel and 2 will have the enderchest
+    -- We start at 2 because 1 will have the enderchest
     local isInventoryFull = true
-    for i = 3, 16, 1 do
+    for i = 2, 16, 1 do
         if turtle.getItemCount(i) == 0 then
             isInventoryFull = false
         end

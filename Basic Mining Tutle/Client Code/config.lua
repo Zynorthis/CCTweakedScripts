@@ -1,4 +1,4 @@
--- Configuration File
+-- Configuration File ~ v0.1 --
 
 -- will attempt to start the Miner program automatically when starting up
 automatic_startup = false
@@ -17,4 +17,4 @@ FuelSources = {
     Lava = "Lava"
 }
 
-selected_fuel = FuelSources.Coal
+selected_fuel = FuelSources.Lava
